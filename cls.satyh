@@ -1,0 +1,175 @@
+@require: annot
+@require: color
+@require: math
+@require: uline/uline
+
+module Cls: sig
+
+  val document : 'a -> block-text -> block-text -> document
+  constraint 'a :: (|
+    course : inline-text;
+    name : inline-text;
+    school : inline-text;
+  |)
+
+  direct +p : [inline-text] block-cmd
+  direct \url : [string] inline-cmd
+  direct \bib-book : [int; inline-text; inline-text; inline-text;] inline-cmd
+
+end = struct
+
+  let font-latin-roman = (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, 1.0, 0.)
+  let font-latin-bold = (`fonts-noto-sans:NotoSans-Bold`, 1.0, 0.)
+  let font-latin-italic = (`fonts-noto-serif:NotoSerif-Italic`, 1.0, 0.)
+  let font-latin-sans = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+  let font-cjk-mincho = (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, 1.0, 0.)
+  let font-cjk-gothic = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, 1.0, 0.)
+
+
+  let set-cjk-font font-name ctx =
+    ctx |> set-font HanIdeographic font-name
+        |> set-font Kana font-name
+
+
+  let set-latin-font font-name ctx =
+    ctx |> set-font Latin font-name
+
+
+  let font-size-normal = 12pt
+  let font-size-title = 20pt
+  let font-size-author = 16pt
+  let font-size-date = 16pt
+  let font-size-section = 20pt
+  let font-size-subsection = 16pt
+
+
+  let ctx-get-initial-context width =
+    get-initial-context width (command \math)
+      |> set-font-size font-size-normal
+      |> set-dominant-wide-script Kana
+      |> set-language Kana Japanese
+      |> set-language HanIdeographic Japanese
+      |> set-cjk-font font-cjk-mincho
+      |> set-dominant-narrow-script Latin
+      |> set-language Latin English
+      |> set-latin-font font-latin-roman
+      |> set-hyphen-penalty 100
+      |> set-math-font `lmodern`
+      |> set-manual-rising 0pt % 文字の上下の補正値
+      |> set-text-color Color.black
+
+
+  let page-width = 210mm
+  let page-height = 297mm
+  let top-space = 25mm
+  let bottom-space = 25mm
+  let left-space = (page-width -' (font-size-normal *' 35.0)) *' 0.5
+  let right-space = (page-width -' (font-size-normal *' 35.0)) *' 0.5
+  let text-width = page-width -' left-space -' right-space
+
+
+  let document r before-activities after-activities =
+    let ctx-doc = ctx-get-initial-context text-width in
+    let bb-title =
+      let course =
+        let t = r#course in
+        line-break true true ctx-doc (
+          read-inline ctx-doc {学群・学類：#t;} ++ inline-fil
+        )
+      in
+      let name =
+        let t = r#name in
+        line-break true true ctx-doc (
+          read-inline ctx-doc {氏名：#t;} ++ inline-fil
+        )
+      in
+      let school =
+        let t = r#school in
+        line-break true true ctx-doc (
+          read-inline ctx-doc {高校：#t;} ++ inline-fil
+        )
+      in
+      course +++ name +++ school
+    in
+    let bb-main =
+      let b-title-text = {【これまでの取り組み】} in
+      let b-title =
+        line-break true true ctx-doc (
+          read-inline ctx-doc b-title-text ++ inline-fil
+        )
+      in
+      let b-bb = read-block ctx-doc before-activities in
+      let a-title-text = {【入学までの活動】} in
+      let a-title =
+        line-break true true ctx-doc (
+          read-inline ctx-doc a-title-text ++ inline-fil
+        )
+      in
+      let a-bb = read-block ctx-doc after-activities in
+      b-title +++ b-bb +++ a-title +++ a-bb
+    in
+    % ページサイズ（今回はA4）
+    let page = UserDefinedPaper(page-width, page-height) in
+    % コンテンツを表示させる部分の指定
+    let pagecontf pbinfo =
+      (|
+        text-height = page-height -' (top-space +' bottom-space);
+        text-origin = (left-space, top-space);
+      |)
+    in
+    % ヘッダーとフッター
+    let pagepartsf pbinfo =
+      let page-num = embed-string (arabic pbinfo#page-number) in
+      let ctx = set-paragraph-margin 0pt 0pt ctx-doc in
+      let header = block-nil in
+      let header-origin = (left-space, 0pt) in
+      let footer = block-nil in
+      let footer-origin = (left-space, page-height -' bottom-space) in
+      (|
+        header-content = header;
+        header-origin = header-origin;
+        footer-content = footer;
+        footer-origin = footer-origin;
+      |)
+    in
+    let () = 
+      register-document-information (|
+        title = Some(`自己推薦内容に関する活動概要`);
+        subject = None;
+        author = Some(`金子尚樹`);
+        keywords = [];
+      |)
+    in
+    % メイン
+    page-break page pagecontf pagepartsf (bb-title +++ block-skip 20pt +++ bb-main)
+
+
+
+  let-inline ctx \non-hyph str =
+    let s-lst = string-explode str in
+    let f i =
+      let char = string-unexplode [i] in
+      let ib = char |> embed-string |> read-inline ctx in
+      ib
+    in
+    s-lst
+    |> List.map f
+    |> List.fold-left (++) inline-nil
+    
+  let-inline \url url = {\uline{\href (url) {\non-hyph(url);}}}
+
+
+  let indent ctx = inline-skip (get-font-size ctx)
+
+  let-block ctx +p inner =
+    let ib-indent = indent ctx in
+    let ib-inner = read-inline ctx inner in
+      line-break true true ctx (ib-indent ++ ib-inner ++ inline-fil)
+
+
+  let-inline \bib-book pub-year author title publisher =
+    let it-pub-year = pub-year |> arabic |> embed-string in
+    {#author;．#title;．#publisher;，#it-pub-year;．}
+
+end
+

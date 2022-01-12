@@ -1,0 +1,68 @@
+@import: cls
+@require: enumitem/enumitem
+@require: texlogo/texlogo
+@require: ruby/ruby
+
+open Enumitem in
+
+Cls.document (|
+  course = {情報学群情報科学類};
+  name = {金子尚樹};
+  school = {開成高等学校（令和4年卒業）};
+|) '<
+  +p{大きく分けて、「オープンソースソフトウェア活動(OSS活動)」と「ソフトウェアを活用した学校活動の効率化」の2つを行ってきた。}
+  +p{OSS活動では主に\ruby?:([Ruby.mode Ruby.g])[`サティスファイ`]{|\SATySFi;|}という組版用プログラミング言語とRustという汎用プログラミング言語の2つについて行った。}
+  +p{\SATySFi;は「Better \LaTeX;」となることを目標に、IPAによる2017年度未踏事業の一つとして採択され、制作・公開された組版用ソフトウェアである。OSSであり、ソースコードは\url(`https://github.com/gfngfn/SATySFi`);で公開・配布されている。エラー報告をわかりやすくするために、静的型付けでOCaml likeな文法規則を持ち、字句解析・構文解析・型検査が行われ、多段階計算によるマクロ機能を備えている。}
+  +p{Rustは「効率的で信頼できるソフトウェアを誰もがつくれる言語」を売り文句としているプログラミング言語で、型システムや所有権といった静的検査を導入することで信頼性の高いソフトウェアを作成することができ、C言語と並ぶ高速な実行速度を実現することができる。安定板の最初のリリースが2015年と、比較的若い言語である。公式サイト：\url(`https://www.rust-lang.org/ja/`);}
+  +p{\SATySFi;は若いプログラミング言語であるので、ライブラリがあまり整備されていない。そこで、私は\SATySFi;が公開された少し後からライブラリの整備などを行ってきた。また、ライブラリ作成だけではなく、\SATySFi;本体への機能追加の提案や便利な周辺ツールの作成、コミュニティ活動の主催なども行ってきた。Rustについても、いくつかソフトウェアやライブラリを作成したり、ドキュメントへの貢献などを行ってきた。}
+  +p{具体的には
+  \listing{
+    * カスタマイズ可能なクラスファイルの作成：\url(`https://github.com/puripuri2100/stjarticle`);
+    * ルビを振るためのライブラリの作成：\url(`https://github.com/puripuri2100/SATySFi-ruby`);
+    * JSONパーサの作成：\url(`https://github.com/puripuri2100/SATySFi-json`);
+    * \SATySFi;を使用してmarkdownファイルを\LaTeX;ファイルに変換するライブラリの作成：\url(`https://github.com/puripuri2100/SATySFi-md2latex`);
+    * 絵文字を表示するためのライブラリの開発と絵文字結合を処理するための方法の研究：\url(`https://github.com/puripuri2100/satysfi-twemoji`);
+    * PDFにドキュメント辞書情報を埋め込む機能を追加する提案：\url(`https://github.com/gfngfn/SATySFi/pull/268`);
+    * 外部ファイル読み込み機能を追加する提案：\url(`https://github.com/gfngfn/SATySFi/pull/200`);
+    * 文字列をUnicodeスカラー値列に変換する機能を追加する提案：\url(`https://github.com/gfngfn/SATySFi/pull/202`);
+    * 既存のHTMLドキュメント生成ソフトウェアの拡張機能の一つとして、markdownファイル群から\SATySFi;文書ファイルを生成するソフトウェアをRustで作成：\url(`https://github.com/puripuri2100/mdbook-satysfi`);
+    * Rust用のLL(1)のパーサープログラムを生成するパーサジェネレータをRustで作成：\url(`https://github.com/puripuri2100/llmaker`);
+    * \SATySFi;のソフトウェア会議を二年主催：\url(`https://connpass.com/event/174844/`);・\url(`https://connpass.com/event/206277/`);
+  }などである。これらについて自己推薦書に記載した。そのほかにも自己推薦書に記載しなかったライブラリや周辺ツール、貢献活動などがある。}
+  
+  +p{学校活動では、上記のようなソフトウェア作成や組版ソフトウェアの使用の経験を生かして委員会活動・部活動での業務の効率化を実現した。}
+  +p{具体的には
+  \listing{
+    * 文化祭準備委員会内で大量のコード類・電子機器類の配線や貸し出しを行う係の副責任者を務めた際に、貸出業務の負担を軽減するために、Rustで貸し出し管理ソフトウェアを作成し、活用した(\url(`https://github.com/puripuri2100/dlm`);)
+    * 部活動で作成・配布している100ページ近い部誌の作成を\SATySFi;で行い、大幅な自動化によってPDF作成の手間を減らし誤植を大幅に減らした
+    * 高校三年生のクラスごとに作成される200ページ程度の印刷・製本がきちんと行われたプチ卒業アルバムのような冊子（「運動会パンフレット」と呼ばれている）の作成を\SATySFi;で行い、大幅な自動化によって作成にかかる手間を大幅に削減し、総作成時間を従来の1/8程度まで減らした
+  }である。}
+> '<
+  +p{出願後から現在に至るまで、OSS活動については以下のような活動を行った。
+  \listing{
+    * シンタックスハイライトや適切な改行などを高速に行うことができ、デザイン等をある程度自由に弄ることができるソースコード貼り付けを実現する\SATySFi;ライブラリの作成：\url(`https://github.com/puripuri2100/satysfi-code-printer`);
+    * \SATySFi;によるCSVパーサーライブラリを作成：\url(`https://github.com/puripuri2100/satysfi-csv`);
+    * \SATySFi;によるXMLパーサーライブラリを作成（作成途中であり、非公開）
+    * \SATySFi;のコードフォーマッタを作成し始めた（コメントを保持したまま解析を進める字句解析器の作成）：\url(`https://github.com/puripuri2100/satysfifmt`);
+    * \SATySFi;の組み込み関数についてのドキュメントを大幅に加筆する提案を行い、取り入れていただいた：\url(`https://github.com/gfngfn/SATySFi/pull/281`);
+    * \SATySFi;にchar型を追加する提案を行った（議論途中）：\url(`https://github.com/gfngfn/SATySFi/pull/290`);
+    * \SATySFi;のソースコードに紛れ込んだバグを修正した：\url(`https://github.com/gfngfn/SATySFi/pull/304`);
+    * \SATySFi;のビルドなどからOS依存のコマンドなどを取り除く提案を行った：\url(`https://github.com/gfngfn/SATySFi/pull/310`);
+    * 雪だるまを表示する\LaTeX;用パッケージである"scsnowman"パッケージ（\url(`https://github.com/aminophen/scsnowman`);・\url(`https://acetaminophen.hatenablog.com/entry/2015/12/13/080226`);）に「サンタ帽を雪だるまにつけることができるオプション機能」を追加する提案を行った：\url(`https://github.com/aminophen/scsnowman/pull/11`);
+    * \SATySFi;の技術イベントである"SATySFi Advent Calendar 2021"(\url(`https://adventar.org/calendars/6336`);)を主催し、自身も3つの記事を公開した
+  }}
+  +p{学校活動については、\SATySFi;を用いて高校の卒業文集を作成している。現在、組版は終わり印刷・製本会社に印刷製本をしていただいているところである。組版作業の際、数百人分の文章を同じようなレイアウトで組む際に\SATySFi;でプログラムを作成して大幅な労力の削減を実現した。また、メールで提出された文章を、メール本文から\SATySFi;形式の文章に変換するソフトウェアをRubyで作成して運用するなど、省力化のために様々な工夫を凝らしている。}
+  +p{また、学校から支援をいただきながら研究を進めている「結合絵文字解析方法の考案」については、技術調査が終わり、解析方法の考案も終えている。実際に実装をして動かしてみるところがまだ終わっておらず、現在、考案した方法を実際にコードに起こしてベンチマークを取ろうとしているところである。}
+
+  +p{個人的な勉強として、以下の本などを購入し、一部を読み終え、その他についても読み進めているところである。
+  \listing{
+    * \bib-book(2010){山本 陽平}{Webを支える技術 -HTTP、URI、HTML、そしてREST}{技術評論社}
+    * \bib-book(2010){小森裕介}{プロになるためのWeb技術入門――なぜ，あなたはWebシステムを開発できないのか}{技術評論社}
+    * \bib-book(2019){井上直也，村山公保，竹下隆史，荒井透，苅田幸雄}{マスタリングTCP/IP　入門編}{オーム社}
+    * \bib-book(2018){山田明憲}{Docker/Kubernetes 実践コンテナ開発入門}{技術評論社}
+    * \bib-book(2018){阿佐志保}{プログラマのためのDocker教科書 第2版 インフラの基礎知識&コードによる環境構築の自動化}{翔泳社}
+    * \bib-book(2018) {武内覚}{［試して理解］Linuxの仕組み～実験と図解で学ぶOSとハードウェアの基礎知識}{技術評論社}
+    * \bib-book(2021){中林智之，井田健太}{基礎から学ぶ 組込みRust}{C&R研究所}
+    * \bib-book(2009) {島並良，上野達弘，横山久芳}{著作権法入門}{有斐閣}
+  }}
+>
